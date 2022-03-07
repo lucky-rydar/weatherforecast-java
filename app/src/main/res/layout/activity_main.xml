@@ -27,6 +27,7 @@
         android:paddingLeft="10sp" />
 
     <Button
+        android:id="@+id/getWeatherBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Get weather"
