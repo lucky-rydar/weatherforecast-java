@@ -87,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
     private class TemperatureController {
         private final Integer MAXIMUM_FRACTION_DIGIT = 2;
         private final Double DEFAULT_TEMPERATURE = 0.0;
+        private final Double KELVIN_ABS_DIFFERENCE = 273.15;
 
         private TextView temperatureView;
 
@@ -98,7 +99,8 @@ public class MainActivity extends AppCompatActivity {
         public void setTemperature(Double temperature) {
             DecimalFormat formatter = new DecimalFormat();
             formatter.setMaximumFractionDigits(MAXIMUM_FRACTION_DIGIT);
-            temperatureView.setText(formatter.format(temperature) + " °C");
+            temperatureView.setText(formatter.format(temperature - KELVIN_ABS_DIFFERENCE)
+                    + " °C");
         }
     }
 }
