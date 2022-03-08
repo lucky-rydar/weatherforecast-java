@@ -73,7 +73,10 @@ public class MainActivity extends AppCompatActivity {
             } catch (WeatherGetter.NoSuchCityException e) {
                 cityInput.setText("");
                 Log.i(TAG, "City '" + cityName + "' was not found");
-                Looper.prepare();
+
+                if (Looper.myLooper() == null)
+                    Looper.prepare();
+
                 shortToast("No such city");
             } catch (Exception e) {
                 Log.i(TAG, e.toString());
