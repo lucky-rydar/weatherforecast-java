@@ -3,6 +3,8 @@ package org.weatherforecast;
 import android.os.NetworkOnMainThreadException;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -24,11 +26,11 @@ public class WeatherGetter {
         httpClient = new OkHttpClient();
     }
 
-    public Double getTemperatureIn(String city) throws Exception {
+    public Double getTemperatureIn(String city) throws NoSuchCityException, Exception {
         Coordinate coordinate = getCoordinateByCity(city);
 
-        String url = "http://api.openweathermap.org/data/2.5/weather?lat=" + coordinate.lat + "&lon=" +
-                coordinate.lon + "&appid=" + API_KEY;
+        String url = "http://api.openweathermap.org/data/2.5/weather?lat=" + coordinate.lat +
+                "&lon=" + coordinate.lon + "&appid=" + API_KEY;
         Request request = new Request.Builder().url(url).build();
         Response response = null;
 
@@ -41,7 +43,7 @@ public class WeatherGetter {
         }
     }
 
-    private Coordinate getCoordinateByCity(String city) {
+    private Coordinate getCoordinateByCity(String city) throws NoSuchCityException {
         String url = "http://api.openweathermap.org/geo/1.0/direct?q=" + city + "&limit=" +
                 DEFAULT_LIMIT + "&appid=" + API_KEY;
 
@@ -58,6 +60,8 @@ public class WeatherGetter {
         Coordinate ret = null;
         try {
             ret = extractCoordinateFromJSON(response.body().string());
+        } catch (NoSuchCityException e) {
+            throw e;
         } catch (Exception e) {
             Log.i(TAG, e.toString());
         }
@@ -71,10 +75,17 @@ public class WeatherGetter {
         } catch (JSONException e) {
             Log.i(TAG, e.toString());
             throw e;
+        } catch (NoSuchCityException e) {
+            throw e;
         }
     }
 
-    private Coordinate extractCoordinateFromJSON(JSONArray json) throws Exception {
+    private Coordinate extractCoordinateFromJSON(JSONArray json) throws JSONException,
+            NoSuchCityException {
+        if (json != null && json.length() == 0) {
+            throw new NoSuchCityException("no city found");
+        }
+
         JSONObject firstObj = null;
         try {
             firstObj = json.getJSONObject(0);
@@ -110,6 +121,12 @@ public class WeatherGetter {
         public Coordinate(Double lat, Double lon) {
             this.lat = lat;
             this.lon = lon;
+        }
+    }
+
+    public class NoSuchCityException extends Exception {
+        public NoSuchCityException(String message) {
+            super(message);
         }
     }
 }

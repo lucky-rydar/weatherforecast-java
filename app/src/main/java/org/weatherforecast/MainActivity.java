@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -66,9 +67,14 @@ public class MainActivity extends AppCompatActivity {
 
             WeatherGetter weatherGetter = new WeatherGetter();
             String cityName = strings[0];
-            Double temperature = null;
+            Double temperature = 0.0;
             try {
                 temperature = weatherGetter.getTemperatureIn(cityName);
+            } catch (WeatherGetter.NoSuchCityException e) {
+                cityInput.setText("");
+                Log.i(TAG, "City '" + cityName + "' was not found");
+                Looper.prepare();
+                shortToast("No such city");
             } catch (Exception e) {
                 Log.i(TAG, e.toString());
                 e.printStackTrace();
