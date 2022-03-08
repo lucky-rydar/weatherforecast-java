@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
             WeatherGetter weatherGetter = new WeatherGetter();
             String cityName = strings[0];
-            Double temperature = 0.0;
+            Double temperature = temperatureController.DEFAULT_TEMPERATURE;
             try {
                 temperature = weatherGetter.getTemperatureIn(cityName);
             } catch (WeatherGetter.NoSuchCityException e) {
@@ -92,8 +92,8 @@ public class MainActivity extends AppCompatActivity {
 
     private class TemperatureController {
         private final Integer MAXIMUM_FRACTION_DIGIT = 2;
-        private final Double DEFAULT_TEMPERATURE = 0.0;
         private final Double KELVIN_ABS_DIFFERENCE = 273.15;
+        public final Double DEFAULT_TEMPERATURE = KELVIN_ABS_DIFFERENCE;
 
         private TextView temperatureView;
 
